@@ -4,8 +4,13 @@ namespace Drupal\hbk_cforge_mod\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\image\Entity\ImageStyle;
 use Drupal\file\Entity\File;
+use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\File\FileUrlGeneratorInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 
 /**
  * Provides a 'SliderBlock' block.
@@ -15,7 +20,22 @@ use Drupal\file\Entity\File;
  *  admin_label = @Translation("Slider"),
  * )
  */
-class SliderBlock extends BlockBase {
+class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * @var FileUrlGeneratorInterface $fileUrlGenerator
+   */
+  protected $fileUrlGenerator;
+
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $container->get('file_url_generator')
+    );
+  }
+
+  public function __construct(FileUrlGeneratorInterface $fileUrlGenerator) {
+    $this->fileUrlGenerator = $fileUrlGenerator;
+  }
 
   /**
    * {@inheritdoc}
@@ -55,6 +75,7 @@ class SliderBlock extends BlockBase {
         '#title' => $this->t('Images'),
         '#description' => $this->t('charger l\'image'),
         '#default_value' => $this->configuration['image' . $i],
+        '#upload_location' => 'public://sliders/',
         '#upload_validators' => [
           'file_validate_extensions' => ['jpg jpeg png gif webp'],
         ],
@@ -86,6 +107,12 @@ class SliderBlock extends BlockBase {
     for ($i = 0; $i < 5; $i++) {
       $values = $form_state->getValue('details' . $i);
       $this->configuration['image' . $i] = $values['image' . $i];
+      if ($values['image' . $i]) {
+        # code...
+        $fid = File::load($values['image' . $i][0]);
+        $fid->setPermanent();
+        $fid->save();
+      }
       $this->configuration['description' . $i] = $values['description' . $i];
       $this->configuration['show_slide_' . $i] = $values['show_slide_' . $i];
     }
@@ -101,41 +128,29 @@ class SliderBlock extends BlockBase {
     $image_style = $this->configuration['image_style'] ?? '';
 
     for ($i = 0; $i < 5; $i++) {
-      // Récupérer les informations de configuration
+      // R￩cup￩rer les informations de configuration
       $image = $this->configuration['image' . $i];
       $description = $this->configuration['description' . $i];
       $show_slide = $this->configuration['show_slide_' . $i];
 
-      // Vérifier si un style d'image est défini
+      // V￩rifier si un style d'image est d￩fini
 
-      // Vérifier si une image est définie
+      // V￩rifier si une image est d￩finie
       if (!empty($image)) {
-        // dd($image);
         $file = File::load($image[0]);
 
         if ($file) {
-          // Générer l'URL de l'image avec le style d'image appliqué
-          $image_url = $file->createFileUrl();
+          // G￩n￩rer le chemin de destination du fichier d￩riv￩
 
-          if (!empty($image_style)) {
-            $style = ImageStyle::load($image_style);
-            $styled_image_url = $style->buildUrl($file->getFileUri());
+          // Ajouter l'image ￠ la structure de rendu
+          // Ajouter la description et l'indicateur d'affichage ￠ la structure de rendu
+          // "description" => $description,
+          // "show_slide" => $show_slide,
+          $build['content'][] = [
+            '#theme' => 'image',
+            '#uri' => $file->getFileUri(),
+            '#alt' => 'Description de l\'image',
 
-            if ($styled_image_url) {
-              $image_url = $styled_image_url;
-            }
-          }
-
-          // Ajouter l'image à la structure de rendu
-          // Ajouter la description et l'indicateur d'affichage à la structure de rendu
-          $build['#content'][] = [
-            "description" => $description,
-            "show_slide" => $show_slide,
-            "image" => [
-              '#theme' => 'image',
-              '#uri' => $image_url,
-              '#alt' => 'Description de l\'image',
-            ]
           ];
         }
       }
