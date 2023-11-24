@@ -1,0 +1,7 @@
+hbk_cforge.settings_form:
+  path: '/admin/config/system/hbk-cforge'
+  defaults:
+    _title: 'Hbk Cforge settings'
+    _form: 'Drupal\hbk_cforge\Form\SettingsForm'
+  requirements:
+    _permission: 'administer hbk_cforge configuration'
