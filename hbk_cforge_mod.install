@@ -8,22 +8,22 @@
 /**
  * Implements hook_install().
  */
-function hbk_cforge_install() {
+function hbk_cforge_mod_install() {
   \Drupal::messenger()->addStatus(__FUNCTION__);
 }
 
 /**
  * Implements hook_uninstall().
  */
-function hbk_cforge_uninstall() {
+function hbk_cforge_mod_uninstall() {
   \Drupal::messenger()->addStatus(__FUNCTION__);
 }
 
 /**
  * Implements hook_schema().
  */
-function hbk_cforge_schema() {
-  $schema['hbk_cforge_example'] = [
+function hbk_cforge_mod_schema() {
+  $schema['hbk_cforge_mod_example'] = [
     'description' => 'Table description.',
     'fields' => [
       'id' => [
@@ -80,12 +80,12 @@ function hbk_cforge_schema() {
 /**
  * Implements hook_requirements().
  */
-function hbk_cforge_requirements($phase) {
+function hbk_cforge_mod_requirements($phase) {
   $requirements = [];
 
   if ($phase == 'runtime') {
     $value = mt_rand(0, 100);
-    $requirements['hbk_cforge_status'] = [
+    $requirements['hbk_cforge_mod_status'] = [
       'title' => t('Hbk Cforge status'),
       'value' => t('Hbk Cforge value: @value', ['@value' => $value]),
       'severity' => $value > 50 ? REQUIREMENT_INFO : REQUIREMENT_WARNING,

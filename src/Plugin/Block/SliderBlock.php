@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\hbk_cforge\Plugin\Block;
+namespace Drupal\hbk_cforge_mod\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\image\Entity\ImageStyle;
+use Drupal\file\Entity\File;
 
 /**
  * Provides a 'SliderBlock' block.
@@ -97,15 +97,49 @@ class SliderBlock extends BlockBase {
    */
   public function build() {
     $build = [];
-
     $build['#theme'] = 'slider_block';
-    for ($i = 0; $i < 5; $i++) {
-      # code...
-      $build['#content'][] = $this->configuration['image' . $i];
-      $build['#content'][] = $this->configuration['description' . $i];
-      $build['#content'][] = $this->configuration['show_slide_' . $i];
-    }
+    $image_style = $this->configuration['image_style'] ?? '';
 
+    for ($i = 0; $i < 5; $i++) {
+      // Récupérer les informations de configuration
+      $image = $this->configuration['image' . $i];
+      $description = $this->configuration['description' . $i];
+      $show_slide = $this->configuration['show_slide_' . $i];
+
+      // Vérifier si un style d'image est défini
+
+      // Vérifier si une image est définie
+      if (!empty($image)) {
+        // dd($image);
+        $file = File::load($image[0]);
+
+        if ($file) {
+          // Générer l'URL de l'image avec le style d'image appliqué
+          $image_url = $file->createFileUrl();
+
+          if (!empty($image_style)) {
+            $style = ImageStyle::load($image_style);
+            $styled_image_url = $style->buildUrl($file->getFileUri());
+
+            if ($styled_image_url) {
+              $image_url = $styled_image_url;
+            }
+          }
+
+          // Ajouter l'image à la structure de rendu
+          // Ajouter la description et l'indicateur d'affichage à la structure de rendu
+          $build['#content'][] = [
+            "description" => $description,
+            "show_slide" => $show_slide,
+            "image" => [
+              '#theme' => 'image',
+              '#uri' => $image_url,
+              '#alt' => 'Description de l\'image',
+            ]
+          ];
+        }
+      }
+    }
     return $build;
   }
 }

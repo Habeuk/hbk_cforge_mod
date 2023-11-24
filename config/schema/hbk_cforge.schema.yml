@@ -1,8 +1,8 @@
 # Schema for the configuration files of the Hbk Cforge module.
-hbk_cforge.settings:
+hbk_cforge_mod.settings:
   type: config_object
-  label: 'Hbk Cforge settings'
+  label: "Hbk Cforge settings"
   mapping:
     example:
       type: string
-      label: 'Example'
+      label: "Example"

@@ -1,5 +1,5 @@
 # Custom module library for general purposes.
-hbk_cforge:
+hbk_cforge_mod:
   js:
     js/hbk-cforge.js: {}
   css:
@@ -7,7 +7,7 @@ hbk_cforge:
       css/hbk-cforge.css: {}
   dependencies:
     - core/drupalSettings
-    - hbk_cforge/jquery-labelauty
+    - hbk_cforge_mod/jquery-labelauty
 
 # Third-party library (self hosted).
 jquery-labelauty:
@@ -34,4 +34,5 @@ vuejs:
     url: https://github.com/vuejs/vue/blob/dev/LICENSE
     gpl-compatible: true
   js:
-    https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js: {type: external, minified: true}
+    https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js:
+      { type: external, minified: true }

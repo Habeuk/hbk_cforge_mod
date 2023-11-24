@@ -1,0 +1,6 @@
+hbk_cforge_mod.settings_form:
+  title: "Hbk Cforge"
+  description: "Configure Hbk Cforge."
+  parent: system.admin_config_system
+  route_name: hbk_cforge_mod.settings_form
+  weight: 10
