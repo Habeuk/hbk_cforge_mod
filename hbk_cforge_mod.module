@@ -4,3 +4,7 @@
  * @file
  * Primary module hooks for Hbk Cforge module.
  */
+function hbk_cforge_mod_theme() {
+    $hooks["slider_block"] = [];
+    return $hooks;
+}
