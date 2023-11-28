@@ -1,0 +1,7 @@
+block.settings.hbk_cforge_mod_block_text_image:
+  type: block_settings
+  label: 'Block Text Image block'
+  mapping:
+    example:
+      type: string
+      label: Example
