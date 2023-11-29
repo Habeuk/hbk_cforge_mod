@@ -58,23 +58,18 @@ final class BlockTextImageBlock extends CforgePlugininterface implements Contain
       /** @var ImageStyle $style */
       $image_styles[$style->id()] = $style->label();
     }
-
-    // '#markup' => $this->formatPlaintext('Contenu formaté'),
-    // $form['mon_champ_formate'] = [
-    //   '#type' => 'markup',
-    //   '#markup' => $this->renderer->renderPlain('Contenu formaté'),
-    // ];
-
+    // dump(ImageStyle::loadMultiple());
     $form['title'] = [
-      '#type' => 'textfield ',
+      '#type' => 'textfield',
       '#title' => $this->t('title'),
       '#default_value' => $this->configuration['title'] ?? "",
       '#required' => TRUE
     ];
 
     $form['body'] = [
-      '#type' => 'textarea',
+      '#type' => 'text_format',
       '#title' => $this->t('Body'),
+      '#format' => 'full_html',
       '#default_value' => $this->configuration['body'],
       '#required' => TRUE
     ];
@@ -118,10 +113,11 @@ final class BlockTextImageBlock extends CforgePlugininterface implements Contain
     $fid = File::load($image_config['image'][0]);
     $fid->setPermanent();
     $fid->save();
-    foreach ($this->getValuesToSubmit() as $value) {
-      $this->configuration[$value] = $form_state->getValue($value);
-    }
-    dump($this->configuration);
+    // foreach ($this->getValuesToSubmit() as $value) {
+    //   $this->configuration[$value] = $form_state->getValue($value);
+    // }
+    parent::completeSubmit($this->configuration, $form_state);
+    // dump($this->configuration);
   }
 
   /**
@@ -131,6 +127,7 @@ final class BlockTextImageBlock extends CforgePlugininterface implements Contain
     $title = $this->configuration['title'];
     $body = $this->configuration['body'];
     $bg_style = $this->configuration["bg_style"];
+
     //loading and converting the image in the selected format
     $file = File::load($this->configuration["image"][0]);
     $image_style = ImageStyle::load($this->configuration["image_style"]);
@@ -146,6 +143,7 @@ final class BlockTextImageBlock extends CforgePlugininterface implements Contain
       "body" => $body,
       "image" => $image,
     ];
+    parent::completeBuild($build, $this->configuration);
     return $build;
   }
 }
