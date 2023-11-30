@@ -58,6 +58,7 @@ final class BlockTextImageBlock extends CforgePlugininterface implements Contain
       /** @var ImageStyle $style */
       $image_styles[$style->id()] = $style->label();
     }
+    // dump($this->configuration);
     // dump(ImageStyle::loadMultiple());
     $form['title'] = [
       '#type' => 'textfield',
@@ -69,8 +70,8 @@ final class BlockTextImageBlock extends CforgePlugininterface implements Contain
     $form['body'] = [
       '#type' => 'text_format',
       '#title' => $this->t('Body'),
-      '#format' => 'full_html',
-      '#default_value' => $this->configuration['body'],
+      '#format' => $this->configuration["body"]["format"] ?? 'full_html',
+      '#default_value' => $this->configuration['body']["value"] ?? "",
       '#required' => TRUE
     ];
 
