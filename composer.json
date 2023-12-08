@@ -2,7 +2,7 @@
   "name": "habeuk/hbk_cforge_mod",
   "description": "module pour completer le theme hbk_cforge",
   "license": "MIT",
-  "type": "drupal-custom-module",
+  "type": "drupal-module",
   "autoload": {
     "psr-4": {
       "Habeuk\\HbkCforgeMod\\": "src/"

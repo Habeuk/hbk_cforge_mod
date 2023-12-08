@@ -97,9 +97,10 @@ class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
         '#required' => $this->configuration["show_slide_" . $i] ?? FALSE
       ];
       $form['details' . $i]['description' . $i] = [
-        "#type" => 'textarea',
+        "#type" => 'text_format',
         '#title' => $this->t("Description"),
         '#description' => $this->t("Description pour l'image chargée"),
+        '#format' => $this->configuration["body"]["format"] ?? 'full_html',
         '#default_value' => $this->configuration['description' . $i],
 
       ];
