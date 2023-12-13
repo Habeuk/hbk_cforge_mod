@@ -84,8 +84,6 @@ final class SocialLinksBlock extends CforgePlugininterface {
       $this->configuration['socials'][strtolower($value)] = $form_state->getValue(strtolower($value));
     }
     parent::completeSubmit($this->configuration, $form_state);
-
-    dump($this->configuration);
   }
 
   /**
