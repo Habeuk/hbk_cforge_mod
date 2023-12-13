@@ -44,18 +44,9 @@ class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
   /**
    * {@inheritdoc}
    */
-  public function defaultConfiguration() {
-    return [] + parent::defaultConfiguration();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function blockForm($form, FormStateInterface $form_state) {
-    // dd([$this->configuration]);
     $styleStorage = \Drupal::entityTypeManager()->getStorage('image_style');
     $styles = $styleStorage->loadMultiple();
-
     $image_styles = [];
     foreach ($styles as $style) {
       /** @var ImageStyle $style */
@@ -89,7 +80,7 @@ class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
         '#type' => 'managed_file',
         '#title' => $this->t('Images'),
         '#description' => $this->t('charger l\'image'),
-        '#default_value' => $this->configuration['image' . $i],
+        '#default_value' => $this->configuration['image' . $i] ?? null,
         '#upload_location' => 'public://sliders/',
         '#upload_validators' => [
           'file_validate_extensions' => ['jpg jpeg png gif webp'],
@@ -101,7 +92,7 @@ class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
         '#title' => $this->t("Description"),
         '#description' => $this->t("Description pour l'image chargée"),
         '#format' => $this->configuration["body"]["format"] ?? 'full_html',
-        '#default_value' => $this->configuration['description' . $i],
+        '#default_value' => $this->configuration['description' . $i]["value"] ?? "",
 
       ];
       $form['details' . $i]['call_to_action' . $i] = [
@@ -134,25 +125,6 @@ class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
     return $form;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    // Récupérez la valeur du champ de saisie de lien
-    dump("yes");
-    for ($i = 0; $i < 5; $i++) {
-      $values = $form_state->getValue['details' . $i];
-
-      $link = $values['call_to_action_link' . $i];
-      $link_label = $values['call_to_action_label' . $i];
-      // Vérifiez si le lien est valide
-      if (!empty($link) && !filter_var($link, FILTER_VALIDATE_URL)) {
-        $form_state->setErrorByName('link slide ' . $i, $this->t('Le lien saisi n\'est pas valide.'));
-      } elseif (!empty($link) && empty($link_label)) {
-        $form_state->setErrorByName('label link slide ' . $i, $this->t('the label of the link can\'t be empty if there is a link'));
-      }
-    }
-  }
 
   /**
    * {@inheritdoc}
@@ -160,20 +132,20 @@ class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
   public function blockSubmit($form, FormStateInterface $form_state) {
     for ($i = 0; $i < 5; $i++) {
       $values = $form_state->getValue('details' . $i);
-      $this->configuration['title' . $i] = $values['title' . $i];
-      $this->configuration['image' . $i] = $values['image' . $i];
+      $this->configuration['title' . $i] = $values['title' . $i] ?? "";
+      $this->configuration['image' . $i] = $values['image' . $i] ?? null;
       if ($values['image' . $i]) {
         # code...
         $fid = File::load($values['image' . $i][0]);
         $fid->setPermanent();
         $fid->save();
       }
-      $this->configuration['description' . $i] = $values['description' . $i];
-      $this->configuration['show_slide_' . $i] = $values['show_slide_' . $i];
-      $this->configuration['call_to_action_label' . $i] = $values["call_to_action" . $i]['call_to_action_label' . $i];
-      $this->configuration['call_to_action_link' . $i] = $values["call_to_action" . $i]['call_to_action_link' . $i];
+      $this->configuration['description' . $i] = $values['description' . $i] ?? null;
+      $this->configuration['show_slide_' . $i] = $values['show_slide_' . $i] ?? null;
+      $this->configuration['call_to_action_label' . $i] = $values["call_to_action" . $i]['call_to_action_label' . $i] ?? null;
+      $this->configuration['call_to_action_link' . $i] = $values["call_to_action" . $i]['call_to_action_link' . $i] ?? null;
     }
-    $this->configuration["image_style"] = $form_state->getValue("image_style");
+    $this->configuration["image_style"] = $form_state->getValue("image_style") ?? null;
   }
 
   /**
@@ -186,12 +158,12 @@ class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
     for ($i = 0; $i < 5; $i++) {
       // R￩cup￩rer les informations de configuration
-      $title = $this->configuration['title' . $i];
-      $image = $this->configuration['image' . $i];
-      $description = $this->configuration['description' . $i];
-      $show_slide = $this->configuration['show_slide_' . $i];
-      $link = $this->configuration['call_to_action_link' . $i];
-      $link_label = $this->configuration['call_to_action_label' . $i];
+      $title = $this->configuration['title' . $i] ?? null;
+      $image = $this->configuration['image' . $i] ?? null;
+      $description = $this->configuration['description' . $i] ?? null;
+      $show_slide = $this->configuration['show_slide_' . $i] ?? null;
+      $link = $this->configuration['call_to_action_link' . $i] ?? null;
+      $link_label = $this->configuration['call_to_action_label' . $i] ?? null;
       // V￩rifier si un style d'image est d￩fini
 
       // V￩rifier si une image est d￩finie
