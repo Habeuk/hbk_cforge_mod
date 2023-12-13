@@ -45,17 +45,6 @@ final class SocialLinksBlock extends CforgePlugininterface {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
   }
 
-
-
-  /**
-   * {@inheritdoc}
-   */
-  public function defaultConfiguration(): array {
-    return [
-      'example' => $this->t('Hello world!'),
-    ];
-  }
-
   /**
    * {@inheritdoc}
    */
@@ -94,9 +83,6 @@ final class SocialLinksBlock extends CforgePlugininterface {
     foreach ($this->socials as $value) {
       $this->configuration['socials'][strtolower($value)] = $form_state->getValue(strtolower($value));
     }
-
-    parent::completeSubmit($this->configuration, $form_state);
-    dump($this->configuration);
     // dump($this->configuration);
   }
 
