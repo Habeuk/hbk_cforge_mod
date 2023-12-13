@@ -76,14 +76,16 @@ final class SocialLinksBlock extends CforgePlugininterface {
    * {@inheritdoc}
    */
   public function blockSubmit($form, FormStateInterface $form_state): void {
-    // $this->configuration = [];
+
     $image_config = $form_state->getValue('image_config');
     $this->configuration['title'] = $form_state->getValue("title");
-    $this->configuration['socials'];
+    $this->configuration['socials'] = [];
     foreach ($this->socials as $value) {
       $this->configuration['socials'][strtolower($value)] = $form_state->getValue(strtolower($value));
     }
-    // dump($this->configuration);
+    parent::completeSubmit($this->configuration, $form_state);
+
+    dump($this->configuration);
   }
 
   /**
