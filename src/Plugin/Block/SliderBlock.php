@@ -21,27 +21,24 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
  * )
  */
 class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
-
+  
   /**
+   *
    * @var FileUrlGeneratorInterface $fileUrlGenerator
    */
   protected $fileUrlGenerator;
-
+  
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('file_url_generator')
-    );
+    return new static($configuration, $plugin_id, $plugin_definition, $container->get('file_url_generator'));
   }
-
+  
   public function __construct(array $configuration, $plugin_id, $plugin_definition, FileUrlGeneratorInterface $fileUrlGenerator) {
     $this->fileUrlGenerator = $fileUrlGenerator;
     parent::__construct($configuration, $plugin_id, $plugin_definition);
   }
-
+  
   /**
+   *
    * {@inheritdoc}
    */
   public function blockForm($form, FormStateInterface $form_state) {
@@ -52,29 +49,29 @@ class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
       /** @var ImageStyle $style */
       $image_styles[$style->id()] = $style->label();
     }
-
+    
     $form['image_style'] = [
       '#type' => 'select',
       '#title' => $this->t('Image Style'),
       '#options' => $image_styles,
-      '#default_value' => $this->configuration['image_style'] ?? '',
+      '#default_value' => $this->configuration['image_style'] ?? ''
     ];
     for ($i = 0; $i < 5; $i++) {
       $form['details' . $i] = [
         '#type' => 'details',
         '#title' => $this->t('Image ' . $i),
-        '#open' => FALSE,
+        '#open' => FALSE
       ];
       $form['details' . $i]['title' . $i] = [
         "#type" => "textfield",
         "#title" => $this->t("Title"),
         '#description' => $this->t('the title shown in the slider'),
-        '#default_value' => $this->configuration['title' . $i] ?? "",
+        '#default_value' => $this->configuration['title' . $i] ?? ""
       ];
       $form['details' . $i]['call_to_action' . $i] = [
         '#type' => 'link',
         '#title' => $this->t('lien ' . $i),
-        '#url' => Url::fromUri('internal:/chemin-de-mon-lien'),
+        '#url' => Url::fromUri('internal:/chemin-de-mon-lien')
       ];
       $form['details' . $i]['image' . $i] = [
         '#type' => 'managed_file',
@@ -83,7 +80,9 @@ class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
         '#default_value' => $this->configuration['image' . $i] ?? null,
         '#upload_location' => 'public://sliders/',
         '#upload_validators' => [
-          'file_validate_extensions' => ['jpg jpeg png gif webp'],
+          'file_validate_extensions' => [
+            'jpg jpeg png gif webp'
+          ]
         ],
         '#required' => $this->configuration["show_slide_" . $i] ?? FALSE
       ];
@@ -92,8 +91,7 @@ class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
         '#title' => $this->t("Description"),
         '#description' => $this->t("Description pour l'image chargée"),
         '#format' => $this->configuration["body"]["format"] ?? 'full_html',
-        '#default_value' => $this->configuration['description' . $i]["value"] ?? "",
-
+        '#default_value' => $this->configuration['description' . $i]["value"] ?? ""
       ];
       $form['details' . $i]['call_to_action' . $i] = [
         '#type' => 'fieldset',
@@ -105,7 +103,7 @@ class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
         '#type' => 'textfield',
         '#title' => $this->t('button label'),
         '#default_value' => $this->configuration['call_to_action_label' . $i] ?? '',
-        '#required' => empty($this->configuration['call_to_action_link' . $i]) ? FALSE : TRUE,
+        '#required' => empty($this->configuration['call_to_action_link' . $i]) ? FALSE : TRUE
       ];
       $form['details' . $i]['call_to_action' . $i]['call_to_action_link' . $i] = [
         '#type' => 'textfield',
@@ -116,17 +114,17 @@ class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
         "#type" => 'checkbox',
         '#title' => $this->t("show slide"),
         '#description' => $this->t("whether or not this slide should be shown"),
-        '#default_value' => $this->configuration['show_slide_' . $i] ? TRUE : FALSE,
+        '#default_value' => $this->configuration['show_slide_' . $i] ? TRUE : FALSE
       ];
-
+      
       // '#weight' => '0', ; will be handled later
     }
-
+    
     return $form;
   }
-
-
+  
   /**
+   *
    * {@inheritdoc}
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
@@ -147,15 +145,16 @@ class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
     }
     $this->configuration["image_style"] = $form_state->getValue("image_style") ?? null;
   }
-
+  
   /**
+   *
    * {@inheritdoc}
    */
   public function build() {
     $build = [];
     $build['#theme'] = 'slider_block';
     $selected_image_style = $this->configuration['image_style'] ?? '';
-
+    
     for ($i = 0; $i < 5; $i++) {
       // R￩cup￩rer les informations de configuration
       $title = $this->configuration['title' . $i] ?? null;
@@ -165,18 +164,20 @@ class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
       $link = $this->configuration['call_to_action_link' . $i] ?? null;
       $link_label = $this->configuration['call_to_action_label' . $i] ?? null;
       // V￩rifier si un style d'image est d￩fini
-
+      
       // V￩rifier si une image est d￩finie
       if (!empty($image)) {
         $file = File::load($image[0]);
-
+        
         if ($file) {
           // G￩n￩rer le chemin de destination du fichier d￩riv￩
-
+          
           // Ajouter l'image ￠ la structure de rendu
-          // Ajouter la description et l'indicateur d'affichage ￠ la structure de rendu
-
+          // Ajouter la description et l'indicateur d'affichage ￠ la structure
+          // de rendu
+          
           /**
+           *
            * @var ImageStyle
            */
           $imageStyle = ImageStyle::load($selected_image_style);
@@ -187,17 +188,16 @@ class SliderBlock extends BlockBase implements ContainerFactoryPluginInterface {
             "show_slide" => $show_slide,
             "link" => $link,
             "link_label" => $link_label,
-            "image" =>
-            [
+            "image" => [
               '#theme' => 'image',
               '#uri' => $uri,
-              '#alt' => 'Description de l\'image',
+              '#alt' => 'Description de l\'image'
             ]
-
           ];
         }
       }
     }
     return $build;
   }
+  
 }

@@ -1,10 +1,22 @@
 <?php
 
 /**
+ *
  * @file
  * Primary module hooks for Hbk Cforge module.
  */
-function hbk_cforge_mod_theme() {
-    $hooks["slider_block"] = [];
-    return $hooks;
+function hbk_cforge_mod_theme($existing, $type, $theme, $path) {
+  $hooks["slider_block"] = [];
+  // $hooks['hbk_cforge_forum_display'] = [
+  // 'variables' => [
+  // 'forums' => NULL,
+  // 'topics' => NULL,
+  // 'parents' => NULL,
+  // 'tid' => NULL,
+  // 'sortby' => NULL,
+  // 'forum_per_page' => NULL
+  // ]
+  // ];
+  return $hooks;
 }
+//hook_theme();
