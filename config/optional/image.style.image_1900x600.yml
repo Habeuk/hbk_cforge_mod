@@ -1,0 +1,14 @@
+langcode: fr
+status: true
+dependencies: {  }
+name: image_1900x600
+label: 'Slider 1900x600'
+effects:
+  74b1e244-55ae-4c9c-ab2c-91db58e61938:
+    uuid: 74b1e244-55ae-4c9c-ab2c-91db58e61938
+    id: image_scale_and_crop
+    weight: 1
+    data:
+      width: 1900
+      height: 600
+      anchor: center-center

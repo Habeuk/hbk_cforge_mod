@@ -1,4 +1,5 @@
 <?php
+use Drupal\Core\Template\Attribute;
 
 /**
  *
@@ -6,17 +7,18 @@
  * Primary module hooks for Hbk Cforge module.
  */
 function hbk_cforge_mod_theme($existing, $type, $theme, $path) {
-  $hooks["slider_block"] = [];
-  // $hooks['hbk_cforge_forum_display'] = [
-  // 'variables' => [
-  // 'forums' => NULL,
-  // 'topics' => NULL,
-  // 'parents' => NULL,
-  // 'tid' => NULL,
-  // 'sortby' => NULL,
-  // 'forum_per_page' => NULL
-  // ]
-  // ];
+  $hooks['slider_block'] = [
+    'preprocess functions' => [
+      'template_preprocess_slider_block'
+    ],
+    'variables' => [
+      'sliders' => [],
+      'attributes' => NULL
+    ]
+  ];
   return $hooks;
 }
-//hook_theme();
+
+function template_preprocess_slider_block(&$vars) {
+}
+
