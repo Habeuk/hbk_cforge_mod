@@ -5,3 +5,5 @@ slider-style:
       css/slider-style.css: {}
   js:
     js/slider-style.js: { preprocess: false }
+  dependencies:
+    - core/drupal
